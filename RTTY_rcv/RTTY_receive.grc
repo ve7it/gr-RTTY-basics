@@ -108,7 +108,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [968, 12.0]
+    coordinate: [1008, 12.0]
     rotation: 0
     state: enabled
 - name: samp_rate
@@ -162,14 +162,14 @@ blocks:
     affinity: ''
     alias: ''
     comment: sample rate 960 Hz
-    gain: '1.0'
+    gain: samp_rate/(2*math.pi*fsk_deviation*decim)
     maxoutbuf: '0'
     minoutbuf: '0'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [584, 156.0]
+    coordinate: [632, 220.0]
     rotation: 0
     state: true
 - name: analog_simple_squelch_cc_0
@@ -186,7 +186,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [400, 148.0]
+    coordinate: [448, 212.0]
     rotation: 0
     state: enabled
 - name: audio_source_0
@@ -205,7 +205,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [16, 228.0]
+    coordinate: [16, 204.0]
     rotation: 0
     state: enabled
 - name: blocks_char_to_float_0
@@ -222,7 +222,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [528, 340.0]
+    coordinate: [392, 436.0]
     rotation: 0
     state: enabled
 - name: blocks_multiply_const_vxx_0
@@ -240,7 +240,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [968, 156.0]
+    coordinate: [1016, 220.0]
     rotation: 0
     state: enabled
 - name: digital_binary_slicer_fb_0
@@ -255,7 +255,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [408, 392.0]
+    coordinate: [272, 488.0]
     rotation: 0
     state: enabled
 - name: epy_block_0
@@ -331,7 +331,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [584, 392.0]
+    coordinate: [448, 488.0]
     rotation: 0
     state: enabled
 - name: freq_xlating_fir_filter_xxx_0
@@ -351,7 +351,20 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [200, 220.0]
+    coordinate: [200, 196.0]
+    rotation: 0
+    state: enabled
+- name: note_0
+  id: note
+  parameters:
+    alias: ''
+    comment: ''
+    note: revised 04 Apr 2024
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 108.0]
     rotation: 0
     state: enabled
 - name: qtgui_eye_sink_x_0
@@ -447,7 +460,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [968, 228.0]
+    coordinate: [1040, 308.0]
     rotation: 0
     state: true
 - name: qtgui_time_sink_x_0
@@ -544,7 +557,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [624, 252.0]
+    coordinate: [488, 348.0]
     rotation: 0
     state: enabled
 - name: rational_resampler_xxx_0_0
@@ -552,7 +565,7 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    comment: 'sample rate 500 ->
+    comment: 'sample rate = 500 yields
 
       11 samples per symbol'
     decim: '960'
@@ -566,7 +579,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [776, 132.0]
+    coordinate: [824, 196.0]
     rotation: 0
     state: enabled
 - name: virtual_sink_0
@@ -579,7 +592,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1136, 156.0]
+    coordinate: [1184, 220.0]
     rotation: 0
     state: true
 - name: virtual_source_0
@@ -592,7 +605,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [184, 388.0]
+    coordinate: [48, 484.0]
     rotation: 0
     state: true
 - name: zeromq_push_msg_sink_0
@@ -608,7 +621,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [832, 380.0]
+    coordinate: [696, 476.0]
     rotation: 0
     state: true
 
@@ -629,3 +642,4 @@ connections:
 
 metadata:
   file_format: 1
+  grc_version: v3.11.0.0git-652-g5547874b

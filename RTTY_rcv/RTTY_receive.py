@@ -7,46 +7,32 @@
 # GNU Radio Python Flow Graph
 # Title: RTTY_receive
 # Author: Barry Duggan
-# GNU Radio version: 3.10.0.0-rc4
-
-from packaging.version import Version as StrictVersion
-
-if __name__ == '__main__':
-    import ctypes
-    import sys
-    if sys.platform.startswith('linux'):
-        try:
-            x11 = ctypes.cdll.LoadLibrary('libX11.so')
-            x11.XInitThreads()
-        except:
-            print("Warning: failed to XInitThreads()")
+# GNU Radio version: v3.11.0.0git-652-g5547874b
 
 from PyQt5 import Qt
-from PyQt5.QtCore import QObject, pyqtSlot
 from gnuradio import qtgui
-from gnuradio.filter import firdes
-import sip
+from PyQt5 import QtCore
+from PyQt5.QtCore import QObject, pyqtSlot
 from gnuradio import analog
 import math
 from gnuradio import audio
 from gnuradio import blocks
 from gnuradio import digital
 from gnuradio import filter
+from gnuradio.filter import firdes
 from gnuradio import gr
 from gnuradio.fft import window
 import sys
 import signal
+from PyQt5 import Qt
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio import zeromq
-from gnuradio.qtgui import Range, RangeWidget
-from PyQt5 import QtCore
 import RTTY_receive_epy_block_0 as epy_block_0  # embedded python block
+import sip
 
 
-
-from gnuradio import qtgui
 
 class RTTY_receive(gr.top_block, Qt.QWidget):
 
@@ -57,8 +43,8 @@ class RTTY_receive(gr.top_block, Qt.QWidget):
         qtgui.util.check_set_qss()
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
-        except:
-            pass
+        except BaseException as exc:
+            print(f"Qt GUI: Could not set Icon: {str(exc)}", file=sys.stderr)
         self.top_scroll_layout = Qt.QVBoxLayout()
         self.setLayout(self.top_scroll_layout)
         self.top_scroll = Qt.QScrollArea()
@@ -74,12 +60,11 @@ class RTTY_receive(gr.top_block, Qt.QWidget):
         self.settings = Qt.QSettings("GNU Radio", "RTTY_receive")
 
         try:
-            if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-                self.restoreGeometry(self.settings.value("geometry").toByteArray())
-            else:
-                self.restoreGeometry(self.settings.value("geometry"))
-        except:
-            pass
+            geometry = self.settings.value("geometry")
+            if geometry:
+                self.restoreGeometry(geometry)
+        except BaseException as exc:
+            print(f"Qt GUI: Could not restore geometry: {str(exc)}", file=sys.stderr)
 
         ##################################################
         # Variables
@@ -96,8 +81,9 @@ class RTTY_receive(gr.top_block, Qt.QWidget):
         ##################################################
         # Blocks
         ##################################################
-        self._sq_lvl_range = Range(-100, 0, 5, -70, 200)
-        self._sq_lvl_win = RangeWidget(self._sq_lvl_range, self.set_sq_lvl, "Squelch", "counter_slider", float, QtCore.Qt.Horizontal)
+
+        self._sq_lvl_range = qtgui.Range(-100, 0, 5, -70, 200)
+        self._sq_lvl_win = qtgui.RangeWidget(self._sq_lvl_range, self.set_sq_lvl, "Squelch", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_layout.addWidget(self._sq_lvl_win)
         # Create the options list
         self._reverse_options = [1, -1]
@@ -232,7 +218,7 @@ class RTTY_receive(gr.top_block, Qt.QWidget):
         self.blocks_char_to_float_0 = blocks.char_to_float(1, 1)
         self.audio_source_0 = audio.source(samp_rate, '', True)
         self.analog_simple_squelch_cc_0 = analog.simple_squelch_cc(sq_lvl, 1)
-        self.analog_quadrature_demod_cf_0 = analog.quadrature_demod_cf(1.0)
+        self.analog_quadrature_demod_cf_0 = analog.quadrature_demod_cf((samp_rate/(2*math.pi*fsk_deviation*decim)))
 
 
         ##################################################
@@ -279,6 +265,7 @@ class RTTY_receive(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
+        self.analog_quadrature_demod_cf_0.set_gain((self.samp_rate/(2*math.pi*self.fsk_deviation*self.decim)))
         self.freq_xlating_fir_filter_xxx_0.set_taps(firdes.low_pass(1.0,self.samp_rate,1000,400))
 
     def get_reverse(self):
@@ -294,12 +281,14 @@ class RTTY_receive(gr.top_block, Qt.QWidget):
 
     def set_fsk_deviation(self, fsk_deviation):
         self.fsk_deviation = fsk_deviation
+        self.analog_quadrature_demod_cf_0.set_gain((self.samp_rate/(2*math.pi*self.fsk_deviation*self.decim)))
 
     def get_decim(self):
         return self.decim
 
     def set_decim(self, decim):
         self.decim = decim
+        self.analog_quadrature_demod_cf_0.set_gain((self.samp_rate/(2*math.pi*self.fsk_deviation*self.decim)))
 
     def get_center(self):
         return self.center
@@ -319,9 +308,6 @@ class RTTY_receive(gr.top_block, Qt.QWidget):
 
 def main(top_block_cls=RTTY_receive, options=None):
 
-    if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-        style = gr.prefs().get_string('qtgui', 'style', 'raster')
-        Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
 
     tb = top_block_cls()
